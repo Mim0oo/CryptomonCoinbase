@@ -17,6 +17,14 @@ TO DO:
 * Support for other trading platforms
 * BUY/SELL trading BOT
 
+Target virtual currencies:
+* Ethereum
+* Bitcoin
+* Litecoin
+* ZCash
+* Monero
+* and others popular currencies..
+
 ## Requirements:
 * Python v2.7
 * Visual C++ Build Tools for VS 2017 or 2015 VC14 ackages, more info here: [https://wiki.python.org/moin/WindowsCompilers](https://wiki.python.org/moin/WindowsCompilers#Microsoft_Visual_C.2B-.2B-_14.0_standalone:_Build_Tools_for_Visual_Studio_2017_.28x86.2C_x64.2C_ARM.2C_ARM64.29)
