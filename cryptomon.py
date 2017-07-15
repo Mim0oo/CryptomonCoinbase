@@ -1,5 +1,5 @@
 print "-------------------------------------"
-print "CRYPTOMON - Crypto Currency monitor v1.0:07.05.2017"
+print "CRYPTOMON - Crypto Currency monitor v1.0:16.07.2017"
 print "By Martin Georgiev email: geeorgiev[at]gmail.com"
 print "All rights reserved, GNU General Public License v3.0"
 print "----------------------------------------------------"
