@@ -194,8 +194,8 @@ def loopeth():
     Fore.CYAN """
 
     if old_price < etheur_sell_price:
-        print clock+color_green(" ETH sell price raised: ",
-                                str(etheur_sell_price)+"EUR"),
+        print clock+color_green(" ETH sell price raised: "
+                                + str(etheur_sell_price)+"EUR"),
         print color_cyan('Balance: ') \
             + str(get_etheur_balance(etheur_sell_price))+color_cyan(' EUR')
     elif old_price > etheur_sell_price:
