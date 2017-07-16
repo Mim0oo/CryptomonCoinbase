@@ -102,7 +102,7 @@ def get_etheur_sell_price():
 
 
 # ETH/EUR buy price getter
-def get_etheur_sell_price():
+def get_etheur_buy_price():
     etheur_buy_price = float(
         client.get_buy_price(currency_pair='ETH-EUR')['amount'])
     return etheur_buy_price
@@ -124,7 +124,7 @@ def get_eth_balance():
 
 
 def get_etheur_balance(price):
-    return get_eth_balance() * price
+    return round(get_eth_balance() * price, 2)
 
 
 def printit():
@@ -136,7 +136,7 @@ def printit():
     # Print LTC balance and prices
     ltc_price = client.get_sell_price(currency_pair='LTC-EUR')
     ltc_pricy = float(ltc_price['amount'])
-    sum = ltc_pricy * round(float(balance.amount)) * 1.955
+    sum = round(ltc_pricy * float(balance.amount) * 1.955, 2)
     print "LTC sell price:", ltc_price['amount'], "BGN"
     print "LTC BGN", sum, "(", sum - LTC_BUY, ")"
 
@@ -144,7 +144,7 @@ def printit():
     etheur_sell_price = get_etheur_sell_price()
 
     print color_cyan("ETH sell price:"), etheur_sell_price,
-    print color_cyan("EUR,"), etheur_sell_price * 1.955, color_cyan("BGN,")
+    print color_cyan("EUR,"), etheur_sell_price * 1.955, color_cyan("BGN")
     print color_cyan('Account balance: ') \
         + str(get_eth_balance())+color_cyan(' ETH')
     print color_cyan('Account balance: ') \
@@ -187,6 +187,7 @@ def loopeth():
 
   # Print LOOP ETH price
     etheur_sell_price = get_etheur_sell_price()
+    etheur_buy_price = get_etheur_buy_price()
 
     """ print colors
     Fore.GREEN
@@ -195,14 +196,18 @@ def loopeth():
 
     if old_price < etheur_sell_price:
         print clock+color_green(" ETH sell price raised: "
-                                + str(etheur_sell_price)+"EUR"),
+                                + str(etheur_sell_price)+" EUR,"),
         print color_cyan('Balance: ') \
-            + str(get_etheur_balance(etheur_sell_price))+color_cyan(' EUR')
+            + str(get_etheur_balance(etheur_sell_price))+color_cyan(' EUR') \
+            + color_cyan(', BUY: ') \
+            + str(get_etheur_buy_price())+color_cyan(' EUR')
     elif old_price > etheur_sell_price:
         print clock+color_red(" ETH sell price dropped: "
-                              + str(etheur_sell_price)+" EUR"),
+                              + str(etheur_sell_price)+" EUR,"),
         print color_cyan('Balance: ') \
-            + str(get_etheur_balance(etheur_sell_price))+color_cyan(' EUR')
+            + str(get_etheur_balance(etheur_sell_price))+color_cyan(' EUR') \
+            + color_cyan(', BUY: ') \
+            + str(get_etheur_buy_price())+color_cyan(' EUR')
 
   #else:
     # Optional tick for the current price
