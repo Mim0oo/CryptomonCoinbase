@@ -136,7 +136,7 @@ def printit():
     # Print LTC balance and prices
     ltc_price = client.get_sell_price(currency_pair='LTC-EUR')
     ltc_pricy = float(ltc_price['amount'])
-    sum = ltc_pricy *  round(float(balance.amount)) * 1.955
+    sum = ltc_pricy * round(float(balance.amount)) * 1.955
     print "LTC sell price:", ltc_price['amount'], "BGN"
     print "LTC BGN", sum, "(", sum - LTC_BUY, ")"
 
@@ -169,9 +169,9 @@ def eth_monitor():
     if eth_dropped == 0:
         if etheur_sell_price <= ETH_LOW or etheur_sell_price >= ETH_HIGH:
             eth_dropped = 1
-            print color_cyan('ETH reached price: '),
-            str(etheur_sell_price)+color_cyan(' EUR'),
-            print color_cyan(' sending mail... '),
+            print color_cyan('ETH reached price: ') \
+                + str(etheur_sell_price)+color_cyan(' EUR') \
+                + color_cyan(' sending mail... '),
             send_mail('Ethereum Monitor',
                       'ETH sell price: '+str(etheur_sell_price))
             print color_green('done')
