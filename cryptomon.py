@@ -49,7 +49,14 @@ client = Client(
 )
 
 # Retrieving account information
-accounts = client.get_accounts()
+try:
+    accounts = client.get_accounts()
+except Exception, e:
+    print 'Oops! There was a problem connecting to Coinbase. ' \
+        + str(e)
+    print 'Please, check your configuration settings.'
+    sys.exit(0)
+
 for account in accounts.data:
     balance = account.balance
     print "%s: %s %s" % (account.name, balance.amount, balance.currency)
@@ -75,7 +82,14 @@ def color_green(text):
 
 def send_mail(sender, text):
     server = smtplib.SMTP_SSL(MAIL_SERVER)
-    server.login(MAIL_LOGIN, MAIL_PASSWORD)
+
+    # login to mail server
+    try:
+        server.login(MAIL_LOGIN, MAIL_PASSWORD)
+    except Exception, e:
+        print 'Oops! Could not authenticate with mail server. ' \
+            + str(e)
+        print 'Please, check your mail settings.'
 
     SUBJECT = "Python Crypto Currency BOT ALERT"
 
@@ -86,12 +100,20 @@ Subject: %s
 
   %s
   """ % (sender+" "+MAIL_FROM, ", ".join(MAIL_TO), SUBJECT, text)
-    # Send the mail
 
-  # In case of debug needed
-  #server.set_debuglevel(1)
-    server.sendmail(MAIL_FROM, MAIL_TO, message)
-    server.quit()
+    # Send the mail
+    try:
+        # In case of debug needed
+        #server.set_debuglevel(1)
+        server.sendmail(MAIL_FROM, MAIL_TO, message)
+    except Exception, e:
+        print 'Oops! Could not send email alert. ' \
+            + str(e)
+        print 'Please, check your mail settings.'
+        print color_red('failed')
+    else:
+        server.quit()
+        print color_green('done')
 
 
 # ETH/EUR sell price getter
@@ -174,7 +196,6 @@ def eth_monitor():
                 + color_cyan(' sending mail... '),
             send_mail('Ethereum Monitor',
                       'ETH sell price: '+str(etheur_sell_price))
-            print color_green('done')
 
 
 def loopeth():
