@@ -139,7 +139,7 @@ def get_btceur_sell_price():
 
 # Collects ETH balance
 def get_eth_balance():
-    url = 'shttps://api.etherscan.io/api?' \
+    url = 'https://api.etherscan.io/api?' \
         'module=account&action=balance&address='+ETH_ADDRESS+'&' \
         'tag=latest&apikey='+ETHERSCAN_API_KEY
     try:
