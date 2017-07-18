@@ -1,5 +1,5 @@
 print "-------------------------------------"
-print " RYPTOMON - Crypto Currency monitor v1.0:16.07.2017"
+print " CRYPTOMON - Crypto Currency monitor v1.0:16.07.2017"
 print " By Martin Georgiev email: geeorgiev[at]gmail.com"
 print " All rights reserved, GNU General Public License v3.0"
 print "----------------------------------------------------"
@@ -87,7 +87,7 @@ def send_mail(sender, text):
     try:
         server.login(MAIL_LOGIN, MAIL_PASSWORD)
     except Exception, e:
-        print 'Oops! Could not authenticate with mail server. ' \
+        print color_red('Failed to authenticate with mail server. ') \
             + str(e)
         print 'Please, check your mail settings.'
 
@@ -107,7 +107,7 @@ Subject: %s
         #server.set_debuglevel(1)
         server.sendmail(MAIL_FROM, MAIL_TO, message)
     except Exception, e:
-        print 'Oops! Could not send email alert. ' \
+        print color_red('Failed to send email alert. ') \
             + str(e)
         print 'Please, check your mail settings.'
         print color_red('failed')
