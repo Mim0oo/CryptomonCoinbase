@@ -137,14 +137,22 @@ def get_btceur_sell_price():
     return btceur_sell_price
 
 
+# Collects ETH balance
 def get_eth_balance():
-    url = 'https://api.etherscan.io/api?' \
+    url = 'shttps://api.etherscan.io/api?' \
         'module=account&action=balance&address='+ETH_ADDRESS+'&' \
         'tag=latest&apikey='+ETHERSCAN_API_KEY
-    r = requests.get(url)
-    return round(int(r.json()['result'])/math.pow(10, 18), 6)
+    try:
+        r = requests.get(url)
+    except Exception, e:
+        print color_red('Failed to connect to Etherscan.io: ') \
+            + str(e)
+        return 0
+    else:
+        return round(int(r.json()['result'])/math.pow(10, 18), 6)
 
 
+# Converts ETH balance in EUR
 def get_etheur_balance(price):
     return round(get_eth_balance() * price, 2)
 
