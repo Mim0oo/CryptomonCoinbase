@@ -118,23 +118,38 @@ Subject: %s
 
 # ETH/EUR sell price getter
 def get_etheur_sell_price():
-    etheur_sell_price = float(
-        client.get_sell_price(currency_pair='ETH-EUR')['amount'])
-    return etheur_sell_price
+    try:
+        etheur_sell_price = float(
+            client.get_sell_price(currency_pair='ETH-EUR')['amount'])
+    except Exception, e:
+        print color_red('Failed to get ETH sell price. ') \
+            + str(e)
+    else:
+        return etheur_sell_price
 
 
 # ETH/EUR buy price getter
 def get_etheur_buy_price():
-    etheur_buy_price = float(
-        client.get_buy_price(currency_pair='ETH-EUR')['amount'])
-    return etheur_buy_price
+    try:
+        etheur_buy_price = float(
+            client.get_buy_price(currency_pair='ETH-EUR')['amount'])
+    except Exception, e:
+        print color_red('Failed to get ETH buy price. ') \
+            + str(e)
+    else:
+        return etheur_buy_price
 
 
-# ETH/EUR buy price getter
+# BTC/EUR sell price getter
 def get_btceur_sell_price():
-    btceur_sell_price = float(
-        client.get_sell_price(currency_pair='BTC-EUR')['amount'])
-    return btceur_sell_price
+    try:
+        btceur_sell_price = float(
+            client.get_sell_price(currency_pair='BTC-EUR')['amount'])
+    except Exception, e:
+        print color_red('Failed to get BTC sell price. ') \
+            + str(e)
+    else:
+        return btceur_sell_price
 
 
 # Collects ETH balance
@@ -167,7 +182,7 @@ def printit():
     ltc_price = client.get_sell_price(currency_pair='LTC-EUR')
     ltc_pricy = float(ltc_price['amount'])
     sum = round(ltc_pricy * float(balance.amount) * 1.955, 2)
-    print "LTC sell price:", ltc_price['amount'], "BGN"
+    print "LTC sell price:", ltc_price['amount'], "EUR"
     print "LTC BGN", sum, "(", sum - LTC_BUY, ")"
 
     # Print ETH price
