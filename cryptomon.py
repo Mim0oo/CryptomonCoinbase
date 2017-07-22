@@ -15,8 +15,8 @@ import smtplib
 import time
 import sys
 import math
+import json
 # Assets that may be needed for future development
-#import json
 #import hmac,hashlib
 
 print " done"
@@ -78,6 +78,15 @@ def color_cyan(text):
 
 def color_green(text):
     return Fore.GREEN+text+Fore.WHITE
+
+
+# JSON validator function
+def is_json(myjson):
+    try:
+        json_object = json.loads(myjson)
+    except ValueError, e:
+        return False
+    return True
 
 
 def send_mail(sender, text):
@@ -158,13 +167,17 @@ def get_eth_balance():
         'module=account&action=balance&address='+ETH_ADDRESS+'&' \
         'tag=latest&apikey='+ETHERSCAN_API_KEY
     try:
-        r = requests.get(url)
+        result = requests.get(url)
     except Exception, e:
         print color_red('Failed to connect to Etherscan.io: ') \
             + str(e)
         return 0
+    if is_json(result.text):
+            return round(int(result.json()['result'])/math.pow(10, 18), 6)
     else:
-        return round(int(r.json()['result'])/math.pow(10, 18), 6)
+            print color_red('Failed to collect ETH balance: ') \
+                + 'Invalid JSON format'
+            return 0
 
 
 # Converts ETH balance in EUR
