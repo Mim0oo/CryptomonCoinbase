@@ -182,7 +182,15 @@ def get_eth_balance():
 
 # Converts ETH balance in EUR
 def get_etheur_balance(price):
-    return round(get_eth_balance() * price, 2)
+    balance = get_eth_balance()
+    try:
+        float(balance)
+    except Exception, e:
+        print color_red('Failed to collect ETH balance: ') \
+            + 'Invalid value returned: '+str(balance)
+        return 0
+    else:
+        return round(balance * price, 2)
 
 
 def printit():
