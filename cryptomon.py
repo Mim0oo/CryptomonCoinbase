@@ -178,6 +178,9 @@ def get_eth_balance():
             print color_red('Failed to collect ETH balance: ') \
                 + 'Invalid JSON format'
             return 0
+    print color_red('Failed to collect ETH balance: ') \
+        + 'Timeout'
+    return 0
 
 
 # Converts ETH balance in EUR
@@ -187,7 +190,7 @@ def get_etheur_balance(price):
         float(balance)
     except Exception, e:
         print color_red('Failed to collect ETH balance: ') \
-            + 'Invalid value returned: '+str(balance)
+            + 'Invalid value returned: ' + str(e)
         return 0
     else:
         return round(balance * price, 2)
@@ -200,11 +203,15 @@ def printit():
     eth_dropped = 0
 
     # Print LTC balance and prices
-    ltc_price = client.get_sell_price(currency_pair='LTC-EUR')
-    ltc_pricy = float(ltc_price['amount'])
-    sum = round(ltc_pricy * float(balance.amount) * 1.955, 2)
-    print "LTC sell price:", ltc_price['amount'], "EUR"
-    print "LTC BGN", sum, "(", sum - LTC_BUY, ")"
+    try:
+        ltc_price = client.get_sell_price(currency_pair='LTC-EUR')
+    except Exception, e:
+        print color_red('Failed to get_sell_price: ')+str(e)
+    else:
+        ltc_pricy = float(ltc_price['amount'])
+        sum = round(ltc_pricy * float(balance.amount) * 1.955, 2)
+        print "LTC sell price:", ltc_price['amount'], "EUR"
+        print "LTC BGN", sum, "(", sum - LTC_BUY, ")"
 
     # Print ETH price
     etheur_sell_price = get_etheur_sell_price()
