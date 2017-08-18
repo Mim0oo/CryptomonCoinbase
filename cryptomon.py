@@ -28,7 +28,7 @@ ETH_ADDRESS = ''  # Ethereum wallet address
 ETHERSCAN_API_KEY = ''  # Etherscan API KEY
 
 # ETHEREUM MARGIN ALERTS (ETH\EUR)
-ETH_HIGH = 200  # High value alert
+ETH_HIGH = 300  # High value alert
 ETH_LOW = 150  # Low value alert
 
 # LITECOIN INVESTMENT SETTINGS (LTC\EUR)
@@ -173,7 +173,8 @@ def get_eth_balance():
             + str(e)
         return 0
     if is_json(result.text):
-            return round(int(result.json()['result'])/math.pow(10, 18), 6)
+            bal = int(float(result.json()['result']))
+            return round(bal/math.pow(10, 18), 6)
     else:
             print color_red('Failed to collect ETH balance: ') \
                 + 'Invalid JSON format'
