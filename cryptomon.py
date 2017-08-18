@@ -28,11 +28,16 @@ ETH_ADDRESS = ''  # Ethereum wallet address
 ETHERSCAN_API_KEY = ''  # Etherscan API KEY
 
 # ETHEREUM MARGIN ALERTS (ETH\EUR)
-ETH_HIGH = 200  # High value alert
+ETH_HIGH = 300  # High value alert
 ETH_LOW = 150  # Low value alert
 
 # LITECOIN INVESTMENT SETTINGS (LTC\EUR)
 LTC_BUY = 1  # LTC Volume
+
+# YOUR LOCAL CURRENCY SETTINGS
+# CHANGE THIS PER YOUR PREFERENCE
+CURRENCY = 'BGN'  # Bulgarian LEVA
+CURR_EUR = 1.955  # 1 BGN = 1.955 EUR
 
 # EMAIL settings
 MAIL_SERVER = 'smtp.example.com:465'  # SSL server:port
@@ -173,7 +178,8 @@ def get_eth_balance():
             + str(e)
         return 0
     if is_json(result.text):
-            return round(int(result.json()['result'])/math.pow(10, 18), 6)
+            bal = int(float(result.json()['result']))
+            return round(bal/math.pow(10, 18), 6)
     else:
             print color_red('Failed to collect ETH balance: ') \
                 + 'Invalid JSON format'
@@ -217,7 +223,8 @@ def printit():
     etheur_sell_price = get_etheur_sell_price()
 
     print color_cyan("ETH sell price:"), etheur_sell_price,
-    print color_cyan("EUR,"), etheur_sell_price * 1.955, color_cyan("BGN")
+    print color_cyan("EUR,"), etheur_sell_price * CURR_EUR,
+    print color_cyan(CURRENCY)
     print color_cyan('Account balance: ') \
         + str(get_eth_balance())+color_cyan(' ETH')
     print color_cyan('Account balance: ') \
@@ -284,7 +291,8 @@ def loopeth():
   #else:
     # Optional tick for the current price
     #print clock+color_cyan(" ETH sell price: ")+str(etheur_sell_price),
-    color_cyan("EUR, ")+str(etheur_sell_price * 1.955)+color_cyan(" BGN")
+    color_cyan("EUR, ")+str(etheur_sell_price * CURR_EUR) \
+        + color_cyan(" "+CURRENCY)
     eth_monitor()
     old_price = etheur_sell_price
     threading.Timer(60, loopeth).start()
