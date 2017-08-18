@@ -34,6 +34,11 @@ ETH_LOW = 150  # Low value alert
 # LITECOIN INVESTMENT SETTINGS (LTC\EUR)
 LTC_BUY = 1  # LTC Volume
 
+# YOUR LOCAL CURRENCY SETTINGS
+# CHANGE THIS PER YOUR PREFERENCE
+CURRENCY = 'BGN'  # Bulgarian LEVA
+CURR_EUR = 1.955  # 1 BGN = 1.955 EUR
+
 # EMAIL settings
 MAIL_SERVER = 'smtp.example.com:465'  # SSL server:port
 MAIL_LOGIN = ''  # SMTP username
@@ -218,7 +223,8 @@ def printit():
     etheur_sell_price = get_etheur_sell_price()
 
     print color_cyan("ETH sell price:"), etheur_sell_price,
-    print color_cyan("EUR,"), etheur_sell_price * 1.955, color_cyan("BGN")
+    print color_cyan("EUR,"), etheur_sell_price * CURR_EUR,
+    print color_cyan(CURRENCY)
     print color_cyan('Account balance: ') \
         + str(get_eth_balance())+color_cyan(' ETH')
     print color_cyan('Account balance: ') \
@@ -285,7 +291,8 @@ def loopeth():
   #else:
     # Optional tick for the current price
     #print clock+color_cyan(" ETH sell price: ")+str(etheur_sell_price),
-    color_cyan("EUR, ")+str(etheur_sell_price * 1.955)+color_cyan(" BGN")
+    color_cyan("EUR, ")+str(etheur_sell_price * CURR_EUR) \
+        + color_cyan(" "+CURRENCY)
     eth_monitor()
     old_price = etheur_sell_price
     threading.Timer(60, loopeth).start()
