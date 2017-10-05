@@ -9,6 +9,7 @@ from decimal import Decimal, ROUND_05UP, ROUND_HALF_UP
 from datetime import datetime
 from colorama import init
 from colorama import Fore, Back, Style
+import logging
 import requests
 import threading
 import smtplib
@@ -21,6 +22,7 @@ import json
 
 print " done"
 print "------------------------------------------"
+logging.basicConfig(filename='cryptomon.log', level=logging.INFO)
 init()
 
 # APP PARAMETERS
@@ -52,6 +54,20 @@ client = Client(
     'secret',
     api_version=str('2017-07-02')
 )
+
+
+# Logging function
+def logtofile(msg):
+    # Current local time getter
+    clock = datetime.now().strftime('[%Y-%m-%d %H:%M]')
+    logging.info(clock+' '+msg)
+
+
+# Log and print text
+def logthis(text):
+    print text
+    logtofile(text)
+
 
 # Retrieving account information
 try:
@@ -101,9 +117,9 @@ def send_mail(sender, text):
     try:
         server.login(MAIL_LOGIN, MAIL_PASSWORD)
     except Exception, e:
-        print color_red('Failed to authenticate with mail server. ') \
-            + str(e)
-        print 'Please, check your mail settings.'
+        logthis(color_red('Failed to authenticate with mail server. ')
+                + str(e))
+        logthis('Please, check your mail settings.')
 
     SUBJECT = "Python Crypto Currency BOT ALERT"
 
@@ -121,13 +137,14 @@ Subject: %s
         #server.set_debuglevel(1)
         server.sendmail(MAIL_FROM, MAIL_TO, message)
     except Exception, e:
-        print color_red('Failed to send email alert. ') \
-            + str(e)
-        print 'Please, check your mail settings.'
-        print color_red('failed')
+        logthis(color_red('Failed to send email alert. ')
+                + str(e))
+        logthis('Please, check your mail settings.')
+        logthis(color_red('failed'))
     else:
         server.quit()
-        print color_green('done')
+        logthis('Email sent with success.')
+        logthis(color_green('done'))
 
 
 # ETH/EUR sell price getter
@@ -136,8 +153,8 @@ def get_etheur_sell_price():
         etheur_sell_price = float(
             client.get_sell_price(currency_pair='ETH-EUR')['amount'])
     except Exception, e:
-        print color_red('Failed to get ETH sell price. ') \
-            + str(e)
+        logthis(color_red('Failed to get ETH sell price. ')
+                + str(e))
     else:
         return etheur_sell_price
 
@@ -148,8 +165,8 @@ def get_etheur_buy_price():
         etheur_buy_price = float(
             client.get_buy_price(currency_pair='ETH-EUR')['amount'])
     except Exception, e:
-        print color_red('Failed to get ETH buy price. ') \
-            + str(e)
+        logthis(color_red('Failed to get ETH buy price. ')
+                + str(e))
     else:
         return etheur_buy_price
 
@@ -160,8 +177,8 @@ def get_btceur_sell_price():
         btceur_sell_price = float(
             client.get_sell_price(currency_pair='BTC-EUR')['amount'])
     except Exception, e:
-        print color_red('Failed to get BTC sell price. ') \
-            + str(e)
+        logthis(color_red('Failed to get BTC sell price. ')
+                + str(e))
     else:
         return btceur_sell_price
 
@@ -174,18 +191,18 @@ def get_eth_balance():
     try:
         result = requests.get(url)
     except Exception, e:
-        print color_red('Failed to connect to Etherscan.io: ') \
-            + str(e)
+        logthis(color_red('Failed to connect to Etherscan.io: ')
+                + str(e))
         return 0
     if is_json(result.text):
             bal = int(float(result.json()['result']))
             return round(bal/math.pow(10, 18), 6)
     else:
-            print color_red('Failed to collect ETH balance: ') \
-                + 'Invalid JSON format'
+            logthis(color_red('Failed to collect ETH balance: ')
+                    + 'Invalid JSON format')
             return 0
-    print color_red('Failed to collect ETH balance: ') \
-        + 'Timeout'
+    print logthis(color_red('Failed to collect ETH balance: ')
+                  + 'Timeout')
     return 0
 
 
@@ -195,8 +212,8 @@ def get_etheur_balance(price):
     try:
         float(balance)
     except Exception, e:
-        print color_red('Failed to collect ETH balance: ') \
-            + 'Invalid value returned: ' + str(e)
+        logthis(color_red('Failed to collect ETH balance: ')
+                + 'Invalid value returned: ' + str(e))
         return 0
     else:
         return round(balance * price, 2)
@@ -212,25 +229,25 @@ def printit():
     try:
         ltc_price = client.get_sell_price(currency_pair='LTC-EUR')
     except Exception, e:
-        print color_red('Failed to get_sell_price: ')+str(e)
+        logthis(color_red('Failed to get_sell_price: ')+str(e))
     else:
         ltc_pricy = float(ltc_price['amount'])
         sum = round(ltc_pricy * float(balance.amount) * 1.955, 2)
-        print "LTC sell price:", ltc_price['amount'], "EUR"
-        print "LTC BGN", sum, "(", sum - LTC_BUY, ")"
+        logthis("LTC sell price: "+ltc_price['amount']+" EUR")
+        logthis("LTC BGN "+str(sum)+" ("+str(sum - LTC_BUY)+")")
 
     # Print ETH price
     etheur_sell_price = get_etheur_sell_price()
 
-    print color_cyan("ETH sell price:"), etheur_sell_price,
-    print color_cyan("EUR,"), etheur_sell_price * CURR_EUR,
-    print color_cyan(CURRENCY)
-    print color_cyan('Account balance: ') \
-        + str(get_eth_balance())+color_cyan(' ETH')
-    print color_cyan('Account balance: ') \
-        + str(get_etheur_balance(etheur_sell_price))+color_cyan(' EUR')
-    print "------------------------------------------"
-    print color_cyan('Monitoring ETH... ')
+    logthis(color_cyan("ETH sell price: ")+str(etheur_sell_price)
+            + color_cyan(" EUR, ")+str(etheur_sell_price * CURR_EUR)
+            + " " + color_cyan(CURRENCY))
+    logthis(color_cyan('Account balance: ')
+            + str(get_eth_balance())+color_cyan(' ETH'))
+    logthis(color_cyan('Account balance: ')
+            + str(get_etheur_balance(etheur_sell_price))+color_cyan(' EUR'))
+    logthis("------------------------------------------")
+    logthis(color_cyan('Monitoring ETH... '))
 
     # Delay next requests
     # time.sleep(2)
@@ -249,9 +266,10 @@ def eth_monitor():
     if eth_dropped == 0:
         if etheur_sell_price <= ETH_LOW or etheur_sell_price >= ETH_HIGH:
             eth_dropped = 1
-            print color_cyan('ETH reached price: ') \
-                + str(etheur_sell_price)+color_cyan(' EUR') \
-                + color_cyan(' sending mail... '),
+            logthis(color_cyan('ETH reached price: ')
+                    + str(etheur_sell_price)+color_cyan(' EUR')
+                    + color_cyan(' sending mail... '),)
+
             send_mail('Ethereum Monitor',
                       'ETH sell price: '+str(etheur_sell_price))
 
@@ -274,19 +292,20 @@ def loopeth():
     Fore.CYAN """
 
     if old_price < etheur_sell_price:
-        print clock+color_green(" ETH sell price raised: "
-                                + str(etheur_sell_price)+" EUR,"),
-        print color_cyan('Balance: ') \
-            + str(get_etheur_balance(etheur_sell_price))+color_cyan(' EUR') \
-            + color_cyan(', BUY: ') \
-            + str(get_etheur_buy_price())+color_cyan(' EUR')
+        logthis(clock+color_green(" ETH sell price raised: "
+                + str(etheur_sell_price)+" EUR, ")
+                + color_cyan('Balance: ')
+                + str(get_etheur_balance(etheur_sell_price))+color_cyan(' EUR')
+                + color_cyan(', BUY: ')
+                + str(get_etheur_buy_price())+color_cyan(' EUR'))
     elif old_price > etheur_sell_price:
-        print clock+color_red(" ETH sell price dropped: "
-                              + str(etheur_sell_price)+" EUR,"),
-        print color_cyan('Balance: ') \
-            + str(get_etheur_balance(etheur_sell_price))+color_cyan(' EUR') \
-            + color_cyan(', BUY: ') \
-            + str(get_etheur_buy_price())+color_cyan(' EUR')
+        logthis(clock+color_red(" ETH sell price dropped: "
+                + str(etheur_sell_price)+" EUR, ")
+                + color_cyan('Balance: ')
+                + str(get_etheur_balance(etheur_sell_price))
+                + color_cyan(' EUR')
+                + color_cyan(', BUY: ')
+                + str(get_etheur_buy_price())+color_cyan(' EUR'))
 
   #else:
     # Optional tick for the current price
